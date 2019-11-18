@@ -7,7 +7,10 @@
     "setup-dbs": "psql -f ./db/setup.sql",
     "seed": "knex seed:run",
     "test-utils": "mocha spec/utils.spec.js",
-    "test": "mocha spec/app.spec.js"
+    "mig-make": "knex migrate:make",
+    "mig-latest": "knex migrate:latest",
+    "mig-rollback": "knex migrate:rollback",
+    "test": "mocha spec"
   },
   "repository": {
     "type": "git",
