@@ -4,7 +4,6 @@ const {
   commentData,
   userData
 } = require("../data/index.js");
-console.log(articleData);
 const { formatDates, formatComments, makeRefObj } = require("../utils/utils");
 
 exports.seed = function(knex) {

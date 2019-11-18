@@ -1,6 +1,9 @@
 const topicsRouter = require("express").Router();
 const { getTopics } = require("../controllers/topics-c");
-
-topicsRouter.route("/").get(getTopics);
+const { handleDisallowedMethod } = require("../errors/index");
+topicsRouter
+  .route("/")
+  .get(getTopics)
+  .all(handleDisallowedMethod);
 
 module.exports = { topicsRouter };
