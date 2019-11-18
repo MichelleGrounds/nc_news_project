@@ -78,6 +78,48 @@ describe("formatDates", () => {
     ];
     expect(actual).to.eql(expected);
   });
+  it("given an array of data return the data unmutated", () => {
+    const input = [
+      {
+        title: "Running a Node App",
+        topic: "coding",
+        author: "jessjelly",
+        body:
+          "This is part two of a series on how to get up and running with Systemd and Node.js. This part dives deeper into how to successfully run your app with systemd long-term, and how to set it up in a production environment.",
+        created_at: 1471522072389
+      },
+      {
+        title:
+          "The Rise Of Thinking Machines: How IBM's Watson Takes On The World",
+        topic: "coding",
+        author: "jessjelly",
+        body:
+          "Many people know Watson as the IBM-developed cognitive super computer that won the Jeopardy! gameshow in 2011. In truth, Watson is not actually a computer but a set of algorithms and APIs, and since winning TV fame (and a $1 million prize) IBM has put it to use tackling tough problems in every industry from healthcare to finance. Most recently, IBM has announced several new partnerships which aim to take things even further, and put its cognitive capabilities to use solving a whole new range of problems around the world.",
+        created_at: 1500584273256
+      }
+    ];
+    const originalInput = [
+      {
+        title: "Running a Node App",
+        topic: "coding",
+        author: "jessjelly",
+        body:
+          "This is part two of a series on how to get up and running with Systemd and Node.js. This part dives deeper into how to successfully run your app with systemd long-term, and how to set it up in a production environment.",
+        created_at: 1471522072389
+      },
+      {
+        title:
+          "The Rise Of Thinking Machines: How IBM's Watson Takes On The World",
+        topic: "coding",
+        author: "jessjelly",
+        body:
+          "Many people know Watson as the IBM-developed cognitive super computer that won the Jeopardy! gameshow in 2011. In truth, Watson is not actually a computer but a set of algorithms and APIs, and since winning TV fame (and a $1 million prize) IBM has put it to use tackling tough problems in every industry from healthcare to finance. Most recently, IBM has announced several new partnerships which aim to take things even further, and put its cognitive capabilities to use solving a whole new range of problems around the world.",
+        created_at: 1500584273256
+      }
+    ];
+    formatDates(input);
+    expect(input).to.eql(originalInput);
+  });
 });
 
 describe("makeRefObj", () => {
@@ -104,7 +146,7 @@ describe("makeRefObj", () => {
   });
 });
 
-describe("formatComments", () => {
+describe.only("formatComments", () => {
   it("given an empty array, returns an empty array", () => {
     const input = [];
     const actual = formatComments(input);
@@ -172,5 +214,44 @@ describe("formatComments", () => {
       }
     ];
     expect(actual).to.eql(expected);
+  });
+  it("when given an array of objects do not mutate the original data", () => {
+    const input = [
+      {
+        body: "Nobis consequatur animi. Ullam nobis quaerat voluptates veniam.",
+        belongs_to: "Making sense of Redux",
+        created_by: "grumpy19",
+        votes: 7,
+        created_at: 1478813209256
+      },
+      {
+        body:
+          "Sit sequi odio suscipit. Iure quisquam qui alias distinctio eos officia enim aut sit. Corrupti ut praesentium ut iste earum itaque qui. Dolores in ab rerum consequuntur. Id ab aliquid autem dolore.",
+        belongs_to: "Running a Node App",
+        created_by: "weegembump",
+        votes: 11,
+        created_at: 1454293795551
+      }
+    ];
+    const articleRef = { "Making sense of Redux": 4, "Running a Node App": 1 };
+    formatComments(input, articleRef);
+    const originalInput = [
+      {
+        body: "Nobis consequatur animi. Ullam nobis quaerat voluptates veniam.",
+        belongs_to: "Making sense of Redux",
+        created_by: "grumpy19",
+        votes: 7,
+        created_at: 1478813209256
+      },
+      {
+        body:
+          "Sit sequi odio suscipit. Iure quisquam qui alias distinctio eos officia enim aut sit. Corrupti ut praesentium ut iste earum itaque qui. Dolores in ab rerum consequuntur. Id ab aliquid autem dolore.",
+        belongs_to: "Running a Node App",
+        created_by: "weegembump",
+        votes: 11,
+        created_at: 1454293795551
+      }
+    ];
+    expect(input).to.eql(originalInput);
   });
 });

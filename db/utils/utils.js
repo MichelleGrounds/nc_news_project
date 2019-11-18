@@ -1,7 +1,8 @@
 exports.formatDates = list => {
   return list.map(item => {
-    item.created_at = new Date(item.created_at);
-    return item;
+    const newItem = { ...item };
+    newItem.created_at = new Date(newItem.created_at);
+    return newItem;
   });
 };
 
@@ -14,9 +15,8 @@ exports.makeRefObj = list => {
 };
 
 exports.formatComments = (comments, articleRef) => {
-  if (comments.length < 1) return [];
-
-  return comments.map(comment => {
+  return comments.map(originalComment => {
+    const comment = { ...originalComment };
     //created_by is now author
     comment.author = comment.created_by;
     delete comment.created_by;
