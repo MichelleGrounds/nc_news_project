@@ -1,0 +1,28 @@
+You are now connected to database "nc_news" as user "Michelle".
+   username   |                                                        avatar_url                                                        |    name     
+--------------+--------------------------------------------------------------------------------------------------------------------------+-------------
+ tickle122    | https://www.spiritsurfers.net/monastery/wp-content/uploads/_41500270_mrtickle.jpg                                        | Tom Tickle
+ grumpy19     | https://www.tumbit.com/profile-image/4/original/mr-grumpy.jpg                                                            | Paul Grump
+ happyamy2016 | https://vignette1.wikia.nocookie.net/mrmen/images/7/7f/Mr_Happy.jpg/revision/latest?cb=20140102171729                    | Amy Happy
+ cooljmessy   | https://i.imgur.com/WfX0Neu.jpg                                                                                          | Peter Messy
+ weegembump   | https://www.upandrunning.co.uk/media/catalog/product/cache/1/image/650x/040ec09b1e35df139433887a97daa66f/m/r/mr-bump.jpg | Gemma Bump
+ jessjelly    | https://s-media-cache-ak0.pinimg.com/564x/39/62/ec/3962eca164e60cf46f979c1f57d4078b.jpg                                  | Jess Jelly
+(6 rows)
+
+ article_id |       title        |                                                                                                            body                                                                                                            | votes | topic  |  author   |         created_at         
+------------+--------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------+--------+-----------+----------------------------
+          1 | Running a Node App | This is part two of a series on how to get up and running with Systemd and Node.js. This part dives deeper into how to successfully run your app with systemd long-term, and how to set it up in a production environment. |     0 | coding | jessjelly | 2016-08-18 13:07:52.389+01
+(1 row)
+
+   slug   |               description               
+----------+-----------------------------------------
+ coding   | Code is love, code is life
+ football | FOOTIE!
+ cooking  | Hey good looking, what you got cooking?
+(3 rows)
+
+ comment_id |  author   | article_id | votes |         created_at         |                                                                       body                                                                        
+------------+-----------+------------+-------+----------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------
+          1 | tickle122 |         18 |    -1 | 2016-07-09 19:07:18.932+01 | Itaque quisquam est similique et est perspiciatis reprehenderit voluptatem autem. Voluptatem accusantium eius error adipisci quibusdam doloribus.
+(1 row)
+

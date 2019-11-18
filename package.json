@@ -10,7 +10,8 @@
     "mig-make": "knex migrate:make",
     "mig-latest": "knex migrate:latest",
     "mig-rollback": "knex migrate:rollback",
-    "test": "mocha spec"
+    "test": "mocha spec",
+    "dev": "nodemon listen.js"
   },
   "repository": {
     "type": "git",
@@ -31,6 +32,7 @@
   "devDependencies": {
     "chai": "^4.2.0",
     "mocha": "^6.2.2",
+    "nodemon": "^1.19.4",
     "supertest": "^4.0.2"
   }
 }
