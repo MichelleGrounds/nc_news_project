@@ -1,4 +1,8 @@
-const { selectArticleById, updateArticle } = require("../models/articles-m");
+const {
+  selectArticleById,
+  updateArticle,
+  addCommentToArticle
+} = require("../models/articles-m");
 
 exports.getArticleById = (req, res, next) => {
   const { article_id } = req.params;
@@ -23,6 +27,17 @@ exports.patchArticleById = (req, res, next) => {
       } else {
         res.status(202).json({ articles });
       }
+    })
+    .catch(next);
+};
+
+exports.postCommentByArticleId = (req, res, next) => {
+  const { article_id } = req.params;
+  const newComment = req.body;
+  addCommentToArticle(article_id, newComment)
+    .then(comments => {
+      console.log(comments);
+      res.status(201).json({ comments });
     })
     .catch(next);
 };

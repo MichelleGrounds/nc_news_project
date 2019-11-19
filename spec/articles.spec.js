@@ -69,15 +69,37 @@ describe.only("/api", () => {
             expect(body.articles[0].votes).to.equal(10);
           });
       });
-      it.only("PATCH:404, responds with a 404 error when given a non-existent article_id", () => {
+      it("PATCH:404, responds with a 404 error when given a non-existent article_id", () => {
         return request(app)
           .patch("/api/articles/4444")
           .send({ inc_votes: 10 })
           .expect(404)
           .then(({ body }) => {
-             // console.log(body);
             expect(body.msg).to.equal("Not Found");
           });
+      });
+      it("PATCH:400, responds with a 400 error when given an invalid article_id", () => {
+        return request(app)
+          .patch("/api/articles/not-an-id")
+          .send({ inc_votes: 10 })
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.msg).to.equal("Bad Request");
+          });
+      });
+      describe.only("/comments", () => {
+        it("POST:201, responds with the posted comment", () => {
+          return request(app)
+            .post("/api/articles/4/comments")
+            .send({
+              username: "lurker",
+              body: "Great stuff"
+            })
+            .expect(201)
+            .then(({ body }) => {
+              console.log(body);
+            });
+        });
       });
     });
   });

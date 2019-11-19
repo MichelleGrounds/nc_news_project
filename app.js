@@ -7,6 +7,7 @@ const {
   handleInternalServerError,
   handleDatabaseError
 } = require("./errors");
+
 app.use(express.json());
 
 app.use("/api", apiRouter);

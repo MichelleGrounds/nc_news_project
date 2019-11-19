@@ -1,6 +1,6 @@
 const { connection } = require("../db/connection");
 
-exports.selectArticleById = article_id => {
+const selectArticleById = article_id => {
   return connection
     .select("articles.*")
     .from("articles")
@@ -10,8 +10,7 @@ exports.selectArticleById = article_id => {
     .count("comment_id as comment_count");
 };
 
-exports.updateArticle = (article_id, inc_votes) => {
-  console.log(inc_votes);
+const updateArticle = (article_id, inc_votes) => {
   return connection
     .select("*")
     .from("articles")
@@ -19,3 +18,16 @@ exports.updateArticle = (article_id, inc_votes) => {
     .increment("votes", inc_votes)
     .returning("*");
 };
+
+const addCommentToArticle = (article_id, newComment) => {
+  newComment.article_id = article_id;
+  newComment.author = newComment.username;
+  delete newComment.username;
+
+  return connection
+    .insert(newComment)
+    .into("comments")
+    .returning("*");
+};
+
+module.exports = { selectArticleById, updateArticle, addCommentToArticle };
