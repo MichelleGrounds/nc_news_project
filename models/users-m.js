@@ -4,5 +4,5 @@ exports.selectUser = username => {
   return connection
     .select("*")
     .from("users")
-    .where("username", username);
+    .where("username", username)
 };

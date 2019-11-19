@@ -5,6 +5,7 @@ exports.getUser = (req, res, next) => {
   selectUser(username)
     .then(users => {
       if (users.length > 0) {
+        //console.log(users);
         res.status(200).json({ users });
       } else {
         next({ status: 404, msg: "Not Found" });

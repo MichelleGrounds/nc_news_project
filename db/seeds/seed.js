@@ -18,7 +18,7 @@ exports.seed = function(knex) {
     .then(() => {
       return Promise.all([topicsInsertions, usersInsertions]);
     })
-    .then((topicsInsertions, usersInsertions) => {
+    .then(() => {
       const articleDataWithConvertedTimetamps = formatDates(articleData);
 
       return knex("articles")
@@ -26,7 +26,7 @@ exports.seed = function(knex) {
         .returning("*");
     })
     .then(articleInsertions => {
-      //ref object article title: id
+      //ref object -> {article title: id}
       const refObj = makeRefObj(articleInsertions);
       //function to format the comment data, using refObj
       const correctedCommentData = formatComments(commentData, refObj);

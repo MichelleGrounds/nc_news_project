@@ -3,7 +3,6 @@ exports.handleDisallowedMethod = (req, res, next) => {
 };
 
 exports.handleCustomErrors = (err, req, res, next) => {
-  console.log(err);
   if (err.status === 404) {
     res.status(404).send({ msg: "Not Found" });
   } else {
@@ -12,7 +11,7 @@ exports.handleCustomErrors = (err, req, res, next) => {
 };
 
 exports.handleDatabaseError = (err, req, res, next) => {
-  const badRequestCodes = [];
+  const badRequestCodes = ["22P02"];
   if (badRequestCodes.includes(err.code)) {
     res.status(400).send({ msg: "Bad Request" });
   }
