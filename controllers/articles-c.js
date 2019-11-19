@@ -2,8 +2,19 @@ const {
   selectArticleById,
   updateArticle,
   addCommentToArticle,
-  selectCommentsByArticleId
+  selectCommentsByArticleId,
+  selectAllArticles
 } = require("../models/articles-m");
+
+exports.getAllArticles = (req, res, next) => {
+  const { sort_by, order, author, topic } = req.query;
+  selectAllArticles(sort_by, order, author, topic)
+    .then(articles => {
+      console.log("controller then");
+      res.status(200).json({ articles });
+    })
+    .catch(next);
+};
 
 exports.getArticleById = (req, res, next) => {
   const { article_id } = req.params;

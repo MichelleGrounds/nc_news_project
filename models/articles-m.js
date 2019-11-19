@@ -1,5 +1,36 @@
 const { connection } = require("../db/connection");
 
+const selectAllArticles = (
+  sort_by = "created_at",
+  order = "desc",
+  author,
+  topic
+) => {
+  console.log("model");
+  return connection
+    .select(
+      "articles.article_id",
+      "articles.title",
+      "articles.votes",
+      "articles.author",
+      "articles.topic",
+      "articles.created_at"
+    )
+    .from("articles")
+    .modify(function(query) {
+      if (author) {
+        query.where("articles.author", author);
+      }
+      if (topic) {
+        query.where("articles.topic", topic);
+      }
+    })
+    .leftJoin("comments", "comments.article_id", "=", "articles.article_id")
+    .groupBy("articles.article_id")
+    .count("comment_id as comment_count")
+    .orderBy(sort_by, order);
+};
+
 const selectArticleById = article_id => {
   return connection
     .select("articles.*")
@@ -46,5 +77,6 @@ module.exports = {
   selectArticleById,
   updateArticle,
   addCommentToArticle,
-  selectCommentsByArticleId
+  selectCommentsByArticleId,
+  selectAllArticles
 };

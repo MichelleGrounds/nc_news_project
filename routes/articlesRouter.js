@@ -3,9 +3,15 @@ const {
   getArticleById,
   patchArticleById,
   postCommentByArticleId,
-  getCommentsByArticleId
+  getCommentsByArticleId,
+  getAllArticles
 } = require("../controllers/articles-c");
 const { handleDisallowedMethod } = require("../errors");
+
+articlesRouter
+  .route("/")
+  .get(getAllArticles)
+  .all(handleDisallowedMethod);
 
 articlesRouter
   .route("/:article_id")

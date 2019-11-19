@@ -9,7 +9,7 @@ const request = require("supertest");
 const { connection } = require("../db/connection");
 const { app } = require("../app");
 
-describe.only("/api", () => {
+describe("/api", () => {
   beforeEach(() => {
     return connection.seed.run();
   });
@@ -17,6 +17,67 @@ describe.only("/api", () => {
     return connection.destroy();
   });
   describe("/articles", () => {
+    it("GET:200, responds with an array of article objects without the body", () => {
+      return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles[0]).to.contain.keys(
+            "article_id",
+            "title",
+            "votes",
+            "author",
+            "topic",
+            "created_at",
+            "comment_count"
+          );
+          expect(body.articles.length).to.equal(12);
+        });
+    });
+    it("GET:200, responds with an array of article objects which are sorted by date and descending by default", () => {
+      return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles).descendingBy("created_at");
+        });
+    });
+    it("GET:200, responds with an array of article objects which can be sorted by any column asc or desc", () => {
+      return request(app)
+        .get("/api/articles?sort_by=title&order=asc")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles).ascendingBy("title");
+        });
+    });
+    it("GET:200, if there is an author query it filters the articles to the ones from that author", () => {
+      return request(app)
+        .get("/api/articles?author=rogersop")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles[0].author).to.equal("rogersop");
+          expect(body.articles[1].author).to.equal("rogersop");
+          expect(body.articles[2].author).to.equal("rogersop");
+        });
+    });
+    it.only("GET:200, if there is an topic query it filters the articles to the ones from that topic", () => {
+      return request(app)
+        .get("/api/articles?topic=mitch")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles[0].topic).to.equal("mitch");
+          expect(body.articles[4].topic).to.equal("mitch");
+        });
+    });
+    it("GET:400, responds with Bad Request when given an invalid query name", () => {
+      return request(app)
+        .get("/api/articles/?sort_by=not-a-column")
+        .expect(400)
+        .then(({ body }) => {
+          console.log(body);
+          expect(body.msg).to.equal("Bad Request");
+        });
+    });
     describe("/:article_id", () => {
       it("GET:200, returns an array with an article object", () => {
         return request(app)
@@ -54,7 +115,7 @@ describe.only("/api", () => {
             expect(body.msg).to.equal("Method not allowed");
           });
       });
-      it("GET:400", () => {
+      it("GET:400 given an invalid id responds with a Bad Request", () => {
         return request(app)
           .get("/api/articles/not-an-id")
           .expect(400)
@@ -90,7 +151,7 @@ describe.only("/api", () => {
             expect(body.msg).to.equal("Bad Request");
           });
       });
-      describe.only("/comments", () => {
+      describe("/comments", () => {
         it("POST:201, responds with the posted comment", () => {
           return request(app)
             .post("/api/articles/4/comments")
@@ -179,7 +240,7 @@ describe.only("/api", () => {
             .get("/api/articles/5/comments?sort_by=not-a-column")
             .expect(400)
             .then(({ body }) => {
-              console.log(body);
+              expect(body.msg).to.equal("Bad Request");
             });
         });
       });
