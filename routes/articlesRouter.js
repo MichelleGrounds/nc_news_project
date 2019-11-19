@@ -2,7 +2,8 @@ const articlesRouter = require("express").Router();
 const {
   getArticleById,
   patchArticleById,
-  postCommentByArticleId
+  postCommentByArticleId,
+  getCommentsByArticleId
 } = require("../controllers/articles-c");
 const { handleDisallowedMethod } = require("../errors");
 
@@ -14,6 +15,7 @@ articlesRouter
 
 articlesRouter
   .route("/:article_id/comments")
+  .get(getCommentsByArticleId)
   .post(postCommentByArticleId)
   .all(handleDisallowedMethod);
 

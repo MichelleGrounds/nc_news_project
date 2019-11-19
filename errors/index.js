@@ -11,7 +11,7 @@ exports.handleCustomErrors = (err, req, res, next) => {
 };
 
 exports.handleDatabaseError = (err, req, res, next) => {
-  const badRequestCodes = ["22P02"];
+  const badRequestCodes = ["22P02", "42703"];
   if (badRequestCodes.includes(err.code)) {
     res.status(400).send({ msg: "Bad Request" });
   }

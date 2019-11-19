@@ -30,4 +30,21 @@ const addCommentToArticle = (article_id, newComment) => {
     .returning("*");
 };
 
-module.exports = { selectArticleById, updateArticle, addCommentToArticle };
+const selectCommentsByArticleId = (
+  article_id,
+  sort_by = "created_at",
+  order = "desc"
+) => {
+  return connection
+    .select("*")
+    .from("comments")
+    .where("comments.article_id", article_id)
+    .orderBy(sort_by, order);
+};
+
+module.exports = {
+  selectArticleById,
+  updateArticle,
+  addCommentToArticle,
+  selectCommentsByArticleId
+};
