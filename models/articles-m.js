@@ -6,7 +6,6 @@ const selectAllArticles = (
   author,
   topic
 ) => {
-  console.log("model");
   return connection
     .select(
       "articles.article_id",

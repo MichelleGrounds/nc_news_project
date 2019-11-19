@@ -60,7 +60,7 @@ describe("/api", () => {
           expect(body.articles[2].author).to.equal("rogersop");
         });
     });
-    it.only("GET:200, if there is an topic query it filters the articles to the ones from that topic", () => {
+    it("GET:200, if there is an topic query it filters the articles to the ones from that topic", () => {
       return request(app)
         .get("/api/articles?topic=mitch")
         .expect(200)
@@ -130,6 +130,7 @@ describe("/api", () => {
           .send({ inc_votes: 10 })
           .expect(202)
           .then(({ body }) => {
+            console.log(body);
             expect(body.articles[0].votes).to.equal(10);
           });
       });

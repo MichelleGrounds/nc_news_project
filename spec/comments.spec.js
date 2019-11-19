@@ -8,3 +8,53 @@ const { expect } = chai;
 const request = require("supertest");
 const { connection } = require("../db/connection");
 const { app } = require("../app");
+
+describe("/api", () => {
+  beforeEach(() => {
+    return connection.seed.run();
+  });
+  after(() => {
+    return connection.destroy();
+  });
+  describe.only("/comments", () => {
+    describe("/:comment_id", () => {
+      it("PATCH:202, responds with an object that has an updated vote counter", () => {
+        return request(app)
+          .patch("/api/comments/2")
+          .send({ inc_votes: 10 })
+          .expect(202)
+          .then(({ body }) => {
+            expect(body.comments[0].votes).to.equal(24);
+          });
+      });
+      it("PATCH:202, responds with an object that has an updated vote counter by decrementing the vote", () => {
+        return request(app)
+          .patch("/api/comments/2")
+          .send({ inc_votes: -10 })
+          .expect(202)
+          .then(({ body }) => {
+            console.log(body);
+            expect(body.comments[0].votes).to.equal(4);
+          });
+      });
+      it("PATCH:404, responds with a 404 error when the article id cannot be found", () => {
+        return request(app)
+          .patch("/api/comments/22222")
+          .send({ inc_votes: -10 })
+          .expect(404)
+          .then(({ body }) => {
+            expect(body.msg).to.equal("Not Found");
+          });
+      });
+      it("PATCH:400, responds with a 400 error when the article id is invalid", () => {
+        return request(app)
+          .patch("/api/comments/not-an-id")
+          .send({ inc_votes: -10 })
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.msg).to.equal("Bad Request");
+          });
+      });
+    });
+  });
+});
