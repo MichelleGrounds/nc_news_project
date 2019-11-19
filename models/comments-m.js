@@ -9,4 +9,10 @@ const updateCommentById = (comment_id, inc_votes) => {
     .returning("*");
 };
 
-module.exports = { updateCommentById };
+const exterminateCommentById = comment_id => {
+  return connection
+    .from("comments")
+    .where("comment_id", comment_id)
+    .del();
+};
+module.exports = { updateCommentById, exterminateCommentById };

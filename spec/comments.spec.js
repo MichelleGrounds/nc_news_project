@@ -55,6 +55,30 @@ describe("/api", () => {
             expect(body.msg).to.equal("Bad Request");
           });
       });
+
+      it("DELETE:204, responds with no content when a comment is deleted by id", () => {
+        return request(app)
+          .del("/api/comments/4")
+          .expect(204);
+      });
+      it("DELETE:404, when given a non-existent id responds with 404 not found", () => {
+        return request(app)
+          .del("/api/comments/444444")
+          .expect(404)
+          .then(({ body }) => {
+            console.log(body);
+            expect(body.msg).to.equal("Not Found");
+          });
+      });
+      it("DELETE:400, when given an invalid id responds with 400", () => {
+        return request(app)
+          .del("/api/comments/not-an-id")
+          .expect(400)
+          .then(({ body }) => {
+            console.log(body);
+            expect(body.msg).to.equal("Bad Request");
+          });
+      });
     });
   });
 });
