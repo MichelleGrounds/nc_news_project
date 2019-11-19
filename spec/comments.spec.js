@@ -16,7 +16,7 @@ describe("/api", () => {
   after(() => {
     return connection.destroy();
   });
-  describe.only("/comments", () => {
+  describe("/comments", () => {
     describe("/:comment_id", () => {
       it("PATCH:202, responds with an object that has an updated vote counter", () => {
         return request(app)

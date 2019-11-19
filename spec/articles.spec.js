@@ -173,7 +173,7 @@ describe("/api", () => {
               );
             });
         });
-        // it("POST:404, when given a non-existing article_id return 404 not found", () => {
+        // it.only("POST:404, when given a non-existing article_id return 404 not found", () => {
         //   return request(app)
         //     .post("/api/articles/44444/comments")
         //     .send({

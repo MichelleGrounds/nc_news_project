@@ -3,11 +3,15 @@ exports.handleDisallowedMethod = (req, res, next) => {
 };
 
 exports.handleCustomErrors = (err, req, res, next) => {
-  if (err.status === 404) {
-    res.status(404).send({ msg: "Not Found" });
-  } else {
-    next(err);
-  }
+  err.status 
+    ? res.status(404).send({ msg: "Not Found" }) 
+    : next(err);
+
+  // if (err.status === 404) {
+  //   res.status(404).send({ msg: "Not Found" });
+  // } else {
+  //   next(err);
+  // }
 };
 
 exports.handleDatabaseError = (err, req, res, next) => {
