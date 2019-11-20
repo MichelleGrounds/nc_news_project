@@ -1,5 +1,26 @@
 const { connection } = require("../db/connection");
 
+const doesTopicOrAuthorExist = (author, topic) => {
+  if (author) {
+    return connection
+      .select("username")
+      .from("users")
+      .where("username", author);
+  } else {
+    return connection
+      .select("slug")
+      .from("topics")
+      .where("slug", topic);
+  }
+};
+
+const doesArticleExist = article_id => {
+  return connection
+    .select("article_id")
+    .from("articles")
+    .where("article_id", article_id);
+};
+
 const selectAllArticles = (
   sort_by = "created_at",
   order = "desc",
@@ -49,13 +70,14 @@ const updateArticle = (article_id, inc_votes) => {
     .returning("*");
 };
 
-const addCommentToArticle = (article_id, newComment) => {
-  newComment.article_id = article_id;
-  newComment.author = newComment.username;
-  delete newComment.username;
+const addCommentToArticle = (article_id, username, body) => {
+  const insertComment = {};
+  insertComment.article_id = article_id;
+  insertComment.author = username;
+  insertComment.body = body;
 
   return connection
-    .insert(newComment)
+    .insert(insertComment)
     .into("comments")
     .returning("*");
 };
@@ -77,5 +99,7 @@ module.exports = {
   updateArticle,
   addCommentToArticle,
   selectCommentsByArticleId,
-  selectAllArticles
+  selectAllArticles,
+  doesTopicOrAuthorExist,
+  doesArticleExist
 };

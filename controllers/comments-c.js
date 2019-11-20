@@ -9,7 +9,7 @@ exports.patchCommentById = (req, res, next) => {
   updateCommentById(comment_id, inc_votes)
     .then(comments => {
       comments.length < 1
-        ? next(res.status(404).json({ msg: "Not Found" }))
+        ? next({ status: 404 })
         : res.status(202).json({ comments });
     })
     .catch(next);
@@ -21,7 +21,7 @@ exports.deleteCommentById = (req, res, next) => {
     .then(comments => {
       comments === 1
         ? res.sendStatus(204)
-        : res.status(404).json({ msg: "Not Found" });
+        : next({ status: 404 })
     })
     .catch(next);
 };

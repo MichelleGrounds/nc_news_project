@@ -87,12 +87,21 @@ describe("/api", () => {
           expect(body.articles[4].topic).to.equal("mitch");
         });
     });
-    it.only("GET:200, responds with an empty array if the author or topic exist but have no articles", () => {
+    it("GET:200, responds with an empty array if the author exists but has no articles", () => {
+      return request(app)
+        .get("/api/articles/?author=lurker")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles).to.eql([]);
+          expect(body.articles.length).to.equal(0);
+        });
+    });
+    it("GET:200, responds with an empty array if the topic exists but has no articles", () => {
       return request(app)
         .get("/api/articles/?topic=paper")
         .expect(200)
         .then(({ body }) => {
-          expect(body.articles[0]).to.eql([]);
+          expect(body.articles).to.eql([]);
           expect(body.articles.length).to.equal(0);
         });
     });
@@ -101,8 +110,6 @@ describe("/api", () => {
         .get("/api/articles/?sort_by=author&order=cats")
         .expect(200)
         .then(({ body }) => {
-          console.log(body);
-          console.log(body);
           expect(body.articles[0].topic).to.equal("mitch");
         });
     });
@@ -114,20 +121,20 @@ describe("/api", () => {
           expect(body.msg).to.equal("Bad Request");
         });
     });
-    it.only("GET:404, responds with a 404 error when the author is not in the database", () => {
+    it("GET:404, responds with a 404 error when the author is not in the database", () => {
       return request(app)
         .get("/api/articles/?author=Not-An-Author")
         .expect(404)
         .then(({ body }) => {
-          expect(body.msg).to.equal("Not found");
+          expect(body.msg).to.equal("Not Found");
         });
     });
-    it.only("GET:404, responds with a 404 error when the topic is not in the database", () => {
+    it("GET:404, responds with a 404 error when the topic is not in the database", () => {
       return request(app)
         .get("/api/articles/?topic=Not-A-Topic")
         .expect(404)
         .then(({ body }) => {
-          expect(body.msg).to.equal("Not found");
+          expect(body.msg).to.equal("Not Found");
         });
     });
     describe("/:article_id", () => {
@@ -136,7 +143,6 @@ describe("/api", () => {
           .get("/api/articles/4")
           .expect(200)
           .then(({ body }) => {
-            console.log(body);
             expect(body.articles[0].article_id).to.equal(4);
             expect(body.articles.length).to.equal(1);
             expect(body.articles[0]).to.contain.keys(
@@ -231,7 +237,7 @@ describe("/api", () => {
           });
       });
       describe("/comments", () => {
-        it("POST:400, no username is included in the requesting body", () => {
+        it("POST:400, no body is included in the requesting body", () => {
           return request(app)
             .post("/api/articles/4/comments")
             .send({
@@ -239,6 +245,7 @@ describe("/api", () => {
             })
             .expect(400)
             .then(({ body }) => {
+              console.log(body);
               expect(body.msg).to.equal("Bad Request");
             });
         });
@@ -250,6 +257,7 @@ describe("/api", () => {
             })
             .expect(400)
             .then(({ body }) => {
+              console.log(body);
               expect(body.msg).to.equal("Bad Request");
             });
         });
@@ -329,33 +337,30 @@ describe("/api", () => {
               );
             });
         });
-        it("Get:200, querying comments for an article id, can sort them by created_at descending by default", () => {
+        it("GET:200, querying comments for an article id, can sort them by created_at descending by default", () => {
           return request(app)
             .get("/api/articles/5/comments")
             .expect(200)
             .then(({ body }) => {
-              console.log(body);
               expect(body.comments).descendingBy("created_at");
             });
         });
-        it("Get:200, querying comments for an article id, can sort them by any column, ascending or descending", () => {
+        it("GET:200, querying comments for an article id, can sort them by any column, ascending or descending", () => {
           return request(app)
             .get("/api/articles/5/comments?sort_by=author&order=asc")
             .expect(200)
             .then(({ body }) => {
-              console.log(body);
               expect(body.comments).ascendingBy("author");
             });
         });
-        // it.only("GET:200, given a valid article_id that does not have comments return an empty array", () => {
-        //   return request(app)
-        //     .get("/api/articles/4/comments")
-        //     .expect(200)
-        //     .then(({ body }) => {
-        //       console.log(body);
-        //       expect(body.articles[0]).to.equal("Bad Request");
-        //     });
-        // });
+        it("GET:200, given a valid article_id that does not have comments return an empty array", () => {
+          return request(app)
+            .get("/api/articles/4/comments")
+            .expect(200)
+            .then(({ body }) => {
+              expect(body.articles).to.eql([]);
+            });
+        });
         it("GET:404, given a non-existent article id returns a 404 not found", () => {
           return request(app)
             .get("/api/articles/55555/comments")
