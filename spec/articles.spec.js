@@ -188,7 +188,6 @@ describe("/api", () => {
           .send({ inc_votes: 10 })
           .expect(200)
           .then(({ body }) => {
-            console.log(body);
             expect(body.article).to.be.an("object");
             expect(body.article.votes).to.equal(10);
           });
@@ -244,7 +243,7 @@ describe("/api", () => {
           .send({ inc_votes: 10, author: "lurker" })
           .expect(200)
           .then(({ body }) => {
-            expect(body.article[0].votes).to.equal(10);
+            expect(body.article.votes).to.equal(10);
           });
       });
       describe("/comments", () => {
@@ -256,7 +255,6 @@ describe("/api", () => {
             })
             .expect(400)
             .then(({ body }) => {
-              console.log(body);
               expect(body.msg).to.equal("Bad Request");
             });
         });
@@ -268,7 +266,6 @@ describe("/api", () => {
             })
             .expect(400)
             .then(({ body }) => {
-              console.log(body);
               expect(body.msg).to.equal("Bad Request");
             });
         });
@@ -281,7 +278,6 @@ describe("/api", () => {
             })
             .expect(201)
             .then(({ body }) => {
-              console.log(body);
               expect(body.comment.article_id).to.equal(4);
               expect(body.comment.votes).to.equal(0);
               expect(body.comment).to.contain.keys(
@@ -339,9 +335,9 @@ describe("/api", () => {
             .get("/api/articles/5/comments")
             .expect(200)
             .then(({ body }) => {
-              expect(body.comment.length).to.equal(2);
-              expect(body.comment[0].article_id).to.equal(5);
-              expect(body.comment[0]).to.contain.keys(
+              expect(body.comments.length).to.equal(2);
+              expect(body.comments[0].article_id).to.equal(5);
+              expect(body.comments[0]).to.contain.keys(
                 "comment_id",
                 "votes",
                 "created_at",
@@ -355,7 +351,7 @@ describe("/api", () => {
             .get("/api/articles/5/comments")
             .expect(200)
             .then(({ body }) => {
-              expect(body.comment).descendingBy("created_at");
+              expect(body.comments).descendingBy("created_at");
             });
         });
         it("GET:200, querying comments for an article id, can sort them by any column, ascending or descending", () => {
@@ -363,7 +359,7 @@ describe("/api", () => {
             .get("/api/articles/5/comments?sort_by=author&order=asc")
             .expect(200)
             .then(({ body }) => {
-              expect(body.comment).ascendingBy("author");
+              expect(body.comments).ascendingBy("author");
             });
         });
         it("GET:200, given a valid article_id that does not have comments return an empty array", () => {
@@ -371,7 +367,6 @@ describe("/api", () => {
             .get("/api/articles/4/comments")
             .expect(200)
             .then(({ body }) => {
-              console.log(body);
               expect(body.article).to.eql([]);
             });
         });
