@@ -140,12 +140,13 @@ describe("/api", () => {
     describe("/:article_id", () => {
       it("GET:200, returns an array with an article object", () => {
         return request(app)
-          .get("/api/articles/4")
+          .get("/api/articles/2")
           .expect(200)
           .then(({ body }) => {
-            expect(body.articles[0].article_id).to.equal(4);
-            expect(body.articles.length).to.equal(1);
-            expect(body.articles[0]).to.contain.keys(
+            console.log(body);
+            expect(body.article[0].article_id).to.equal(2);
+            expect(body.article.length).to.equal(1);
+            expect(body.article[0]).to.contain.keys(
               "article_id",
               "title",
               "body",
@@ -182,13 +183,13 @@ describe("/api", () => {
           });
       });
 
-      it("PATCH:202, responds with the updated article object", () => {
+      it("PATCH:200, responds with the updated article object", () => {
         return request(app)
           .patch("/api/articles/4")
           .send({ inc_votes: 10 })
-          .expect(202)
+          .expect(200)
           .then(({ body }) => {
-            expect(body.articles[0].votes).to.equal(10);
+            expect(body.article[0].votes).to.equal(10);
           });
       });
       it("PATCH:404, responds with a 404 error when given a non-existent article_id", () => {
@@ -227,13 +228,13 @@ describe("/api", () => {
             expect(body.msg).to.equal("Bad Request");
           });
       });
-      it("PATCH:202, additional properties on the requesting body are ignored", () => {
+      it("PATCH:200, additional properties on the requesting body are ignored", () => {
         return request(app)
           .patch("/api/articles/4")
           .send({ inc_votes: 10, author: "lurker" })
-          .expect(202)
+          .expect(200)
           .then(({ body }) => {
-            expect(body.articles[0].votes).to.equal(10);
+            expect(body.article[0].votes).to.equal(10);
           });
       });
       describe("/comments", () => {
@@ -270,8 +271,8 @@ describe("/api", () => {
             })
             .expect(201)
             .then(({ body }) => {
-              expect(body.comments[0].article_id).to.equal(4);
-              expect(body.comments[0]).to.contain.keys(
+              expect(body.comment[0].article_id).to.equal(4);
+              expect(body.comment[0]).to.contain.keys(
                 "comment_id",
                 "author",
                 "article_id",
@@ -307,7 +308,7 @@ describe("/api", () => {
               expect(body.msg).to.equal("Bad Request");
             });
         });
-        it("POST:422, when given a non-existing username in the requesting body return a 404 error", () => {
+        it("POST:404, when given a non-existing username in the requesting body return a 404 error", () => {
           return request(app)
             .post("/api/articles/4/comments")
             .send({
@@ -326,9 +327,9 @@ describe("/api", () => {
             .get("/api/articles/5/comments")
             .expect(200)
             .then(({ body }) => {
-              expect(body.comments.length).to.equal(2);
-              expect(body.comments[0].article_id).to.equal(5);
-              expect(body.comments[0]).to.contain.keys(
+              expect(body.comment.length).to.equal(2);
+              expect(body.comment[0].article_id).to.equal(5);
+              expect(body.comment[0]).to.contain.keys(
                 "comment_id",
                 "votes",
                 "created_at",
@@ -342,7 +343,7 @@ describe("/api", () => {
             .get("/api/articles/5/comments")
             .expect(200)
             .then(({ body }) => {
-              expect(body.comments).descendingBy("created_at");
+              expect(body.comment).descendingBy("created_at");
             });
         });
         it("GET:200, querying comments for an article id, can sort them by any column, ascending or descending", () => {
@@ -350,7 +351,7 @@ describe("/api", () => {
             .get("/api/articles/5/comments?sort_by=author&order=asc")
             .expect(200)
             .then(({ body }) => {
-              expect(body.comments).ascendingBy("author");
+              expect(body.comment).ascendingBy("author");
             });
         });
         it("GET:200, given a valid article_id that does not have comments return an empty array", () => {
@@ -358,7 +359,7 @@ describe("/api", () => {
             .get("/api/articles/4/comments")
             .expect(200)
             .then(({ body }) => {
-              expect(body.articles).to.eql([]);
+              expect(body.article).to.eql([]);
             });
         });
         it("GET:404, given a non-existent article id returns a 404 not found", () => {

@@ -18,23 +18,23 @@ describe("/api", () => {
   });
   describe("/comments", () => {
     describe("/:comment_id", () => {
-      it("PATCH:202, responds with an object that has an updated vote counter", () => {
+      it("PATCH:200, responds with an object that has an updated vote counter", () => {
         return request(app)
           .patch("/api/comments/2")
           .send({ inc_votes: 10 })
-          .expect(202)
+          .expect(200)
           .then(({ body }) => {
-            expect(body.comments[0].votes).to.equal(24);
+            expect(body.comment[0].votes).to.equal(24);
           });
       });
-      it("PATCH:202, responds with an object that has an updated vote counter by decrementing the vote", () => {
+      it("PATCH:200, responds with an object that has an updated vote counter by decrementing the vote", () => {
         return request(app)
           .patch("/api/comments/2")
           .send({ inc_votes: -10 })
-          .expect(202)
+          .expect(200)
           .then(({ body }) => {
             console.log(body);
-            expect(body.comments[0].votes).to.equal(4);
+            expect(body.comment[0].votes).to.equal(4);
           });
       });
       it("PATCH:404, responds with a 404 error when the article id cannot be found", () => {

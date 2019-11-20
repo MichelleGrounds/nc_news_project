@@ -30,10 +30,10 @@ exports.getAllArticles = (req, res, next) => {
 exports.getArticleById = (req, res, next) => {
   const { article_id } = req.params;
   selectArticleById(article_id)
-    .then(articles => {
-      articles.length < 1
+    .then(article => {
+      article.length < 1
         ? next({ status: 404 })
-        : res.status(200).json({ articles });
+        : res.status(200).json({ article });
     })
     .catch(next);
 };
@@ -42,10 +42,10 @@ exports.patchArticleById = (req, res, next) => {
   const { article_id } = req.params;
   const { inc_votes } = req.body;
   updateArticle(article_id, inc_votes)
-    .then(articles => {
-      articles.length < 1
+    .then(article => {
+      article.length < 1
         ? next({ status: 404 })
-        : res.status(202).json({ articles });
+        : res.status(200).json({ article });
     })
     .catch(next);
 };
@@ -55,10 +55,10 @@ exports.postCommentByArticleId = (req, res, next) => {
   const { username, body } = req.body;
   const newComment = req.body;
   addCommentToArticle(article_id, username, body)
-    .then(comments => {
-      comments.length < 1
+    .then(comment => {
+      comment.length < 1
         ? next({ status: 404 })
-        : res.status(201).json({ comments });
+        : res.status(201).json({ comment });
     })
     .catch(next);
 };

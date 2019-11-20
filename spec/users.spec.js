@@ -1,6 +1,5 @@
 process.env.NODE_ENV = "test";
 
-const chai = require("chai");
 const { expect } = require("chai");
 
 const request = require("supertest");
@@ -21,8 +20,8 @@ describe("/api", () => {
           .get("/api/users/rogersop")
           .expect(200)
           .then(({ body }) => {
-            expect(body.users[0].username).to.equal("rogersop");
-            expect(body.users.length).to.equal(1);
+            expect(body.user[0].username).to.equal("rogersop");
+            expect(body.user.length).to.equal(1);
           });
       });
       it("GET:404, when given an non-existent or invalid username returns a 404 not found error", () => {
