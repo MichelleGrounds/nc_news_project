@@ -16,6 +16,24 @@ describe("/api", () => {
   after(() => {
     return connection.destroy();
   });
+  it("/not-a-route returns a 404", () => {
+    return request(app)
+      .get("/not-a-route")
+      .expect(404)
+      .then(body => {
+        expect(body.status).to.equal(404);
+        expect(body.text).to.equal("Route not found");
+      });
+  });
+  it("/api/not-a-route returns a 404", () => {
+    return request(app)
+      .get("/api/not-a-route")
+      .expect(404)
+      .then(body => {
+        expect(body.status).to.equal(404);
+        expect(body.text).to.equal("Route not found");
+      });
+  });
   describe("/articles", () => {
     it("GET:200, responds with an array of article objects without the body", () => {
       return request(app)
@@ -69,13 +87,47 @@ describe("/api", () => {
           expect(body.articles[4].topic).to.equal("mitch");
         });
     });
+    it.only("GET:200, responds with an empty array if the author or topic exist but have no articles", () => {
+      return request(app)
+        .get("/api/articles/?topic=paper")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles[0]).to.eql([]);
+          expect(body.articles.length).to.equal(0);
+        });
+    });
+    it("GET:200, when given a non-existing order-by keyword ignore it", () => {
+      return request(app)
+        .get("/api/articles/?sort_by=author&order=cats")
+        .expect(200)
+        .then(({ body }) => {
+          console.log(body);
+          console.log(body);
+          expect(body.articles[0].topic).to.equal("mitch");
+        });
+    });
     it("GET:400, responds with Bad Request when given an invalid query name", () => {
       return request(app)
         .get("/api/articles/?sort_by=not-a-column")
         .expect(400)
         .then(({ body }) => {
-          console.log(body);
           expect(body.msg).to.equal("Bad Request");
+        });
+    });
+    it.only("GET:404, responds with a 404 error when the author is not in the database", () => {
+      return request(app)
+        .get("/api/articles/?author=Not-An-Author")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).to.equal("Not found");
+        });
+    });
+    it.only("GET:404, responds with a 404 error when the topic is not in the database", () => {
+      return request(app)
+        .get("/api/articles/?topic=Not-A-Topic")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).to.equal("Not found");
         });
     });
     describe("/:article_id", () => {
@@ -130,7 +182,6 @@ describe("/api", () => {
           .send({ inc_votes: 10 })
           .expect(202)
           .then(({ body }) => {
-            console.log(body);
             expect(body.articles[0].votes).to.equal(10);
           });
       });
@@ -152,7 +203,56 @@ describe("/api", () => {
             expect(body.msg).to.equal("Bad Request");
           });
       });
+      it("PATCH: 400, no inc_vote on body returns 400", () => {
+        return request(app)
+          .patch("/api/articles/not-an-id")
+          .send({})
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.msg).to.equal("Bad Request");
+          });
+      });
+      it("PATCH: 400, invalid inc_vote on body returns 400", () => {
+        return request(app)
+          .patch("/api/articles/not-an-id")
+          .send({ inc_votes: "cats" })
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.msg).to.equal("Bad Request");
+          });
+      });
+      it("PATCH:202, additional properties on the requesting body are ignored", () => {
+        return request(app)
+          .patch("/api/articles/4")
+          .send({ inc_votes: 10, author: "lurker" })
+          .expect(202)
+          .then(({ body }) => {
+            expect(body.articles[0].votes).to.equal(10);
+          });
+      });
       describe("/comments", () => {
+        it("POST:400, no username is included in the requesting body", () => {
+          return request(app)
+            .post("/api/articles/4/comments")
+            .send({
+              username: "lurker"
+            })
+            .expect(400)
+            .then(({ body }) => {
+              expect(body.msg).to.equal("Bad Request");
+            });
+        });
+        it("POST:400, no username is included in the requesting body", () => {
+          return request(app)
+            .post("/api/articles/4/comments")
+            .send({
+              body: "this is a comment"
+            })
+            .expect(400)
+            .then(({ body }) => {
+              expect(body.msg).to.equal("Bad Request");
+            });
+        });
         it("POST:201, responds with the posted comment", () => {
           return request(app)
             .post("/api/articles/4/comments")
@@ -173,19 +273,46 @@ describe("/api", () => {
               );
             });
         });
-        // it.only("POST:404, when given a non-existing article_id return 404 not found", () => {
-        //   return request(app)
-        //     .post("/api/articles/44444/comments")
-        //     .send({
-        //       username: "lurker",
-        //       body: "Great stuff"
-        //     })
-        //     .expect(404)
-        //     .then(({ body }) => {
-        //       console.log(body, "<<test spec file");
-        //       expect(body.msg).to.equal("Not Found");
-        //     });
-        // });
+        it("POST:404, when given a non-existing article_id responds with 404 error", () => {
+          return request(app)
+            .post("/api/articles/44444/comments")
+            .send({
+              username: "lurker",
+              body: "Great stuff"
+            })
+            .expect(404)
+            .then(({ body }) => {
+              expect(body.msg).to.equal(
+                'Key (article_id)=(44444) is not present in table "articles".'
+              );
+            });
+        });
+        it("POST:400, when given an invalid article_id responds with 400 bad request", () => {
+          return request(app)
+            .post("/api/articles/cats/comments")
+            .send({
+              username: "lurker",
+              body: "Great stuff"
+            })
+            .expect(400)
+            .then(({ body }) => {
+              expect(body.msg).to.equal("Bad Request");
+            });
+        });
+        it("POST:422, when given a non-existing username in the requesting body return a 404 error", () => {
+          return request(app)
+            .post("/api/articles/4/comments")
+            .send({
+              username: "coopMassive",
+              body: "Great stuff"
+            })
+            .expect(404)
+            .then(({ body }) => {
+              expect(body.msg).to.equal(
+                'Key (author)=(coopMassive) is not present in table "users".'
+              );
+            });
+        });
         it("GET:200, responds with an array of comment objects belonging to an article", () => {
           return request(app)
             .get("/api/articles/5/comments")
@@ -220,6 +347,15 @@ describe("/api", () => {
               expect(body.comments).ascendingBy("author");
             });
         });
+        // it.only("GET:200, given a valid article_id that does not have comments return an empty array", () => {
+        //   return request(app)
+        //     .get("/api/articles/4/comments")
+        //     .expect(200)
+        //     .then(({ body }) => {
+        //       console.log(body);
+        //       expect(body.articles[0]).to.equal("Bad Request");
+        //     });
+        // });
         it("GET:404, given a non-existent article id returns a 404 not found", () => {
           return request(app)
             .get("/api/articles/55555/comments")

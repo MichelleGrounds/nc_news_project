@@ -10,7 +10,9 @@ exports.getAllArticles = (req, res, next) => {
   const { sort_by, order, author, topic } = req.query;
   selectAllArticles(sort_by, order, author, topic)
     .then(articles => {
-      res.status(200).json({ articles });
+      articles.length < 1
+        ? next(res.status(404).json({ msg: "Not found" }))
+        : res.status(200).json({ articles });
     })
     .catch(next);
 };
@@ -21,7 +23,7 @@ exports.getArticleById = (req, res, next) => {
     .then(articles => {
       articles.length < 1
         ? next(res.status(404).json({ msg: "Not Found" }))
-        : res.status(202).json({ articles });
+        : res.status(200).json({ articles });
     })
     .catch(next);
 };
