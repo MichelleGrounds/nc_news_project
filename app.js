@@ -18,4 +18,4 @@ app.use(handleCustomErrors);
 app.use(handleDatabaseError);
 app.use(handleInternalServerError);
 
-module.exports = { app };
+module.exports = app;

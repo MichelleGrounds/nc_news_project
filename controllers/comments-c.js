@@ -7,10 +7,11 @@ exports.patchCommentById = (req, res, next) => {
   const { comment_id } = req.params;
   const { inc_votes } = req.body;
   updateCommentById(comment_id, inc_votes)
-    .then(comment => {
-      comment.length < 1
+    .then(commentResponse => {
+      const comment = commentResponse[0];
+      commentResponse.length < 1
         ? next({ status: 404 })
-        : res.status(202).json({ comment });
+        : res.status(200).json({ comment });
     })
     .catch(next);
 };

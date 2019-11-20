@@ -6,8 +6,8 @@ chai.use(chaiSorted);
 const { expect } = chai;
 
 const request = require("supertest");
-const { connection } = require("../db/connection");
-const { app } = require("../app");
+const connection = require("../db/connection");
+const app = require("../app");
 
 describe("/api", () => {
   beforeEach(() => {
@@ -24,7 +24,8 @@ describe("/api", () => {
           .send({ inc_votes: 10 })
           .expect(200)
           .then(({ body }) => {
-            expect(body.comment[0].votes).to.equal(24);
+            expect(body.comment.votes).to.equal(24);
+            expect(body.comment).to.be.an("object");
           });
       });
       it("PATCH:200, responds with an object that has an updated vote counter by decrementing the vote", () => {
@@ -33,8 +34,7 @@ describe("/api", () => {
           .send({ inc_votes: -10 })
           .expect(200)
           .then(({ body }) => {
-            console.log(body);
-            expect(body.comment[0].votes).to.equal(4);
+            expect(body.comment.votes).to.equal(4);
           });
       });
       it("PATCH:404, responds with a 404 error when the article id cannot be found", () => {
@@ -66,7 +66,6 @@ describe("/api", () => {
           .del("/api/comments/444444")
           .expect(404)
           .then(({ body }) => {
-            console.log(body);
             expect(body.msg).to.equal("Not Found");
           });
       });
@@ -75,7 +74,6 @@ describe("/api", () => {
           .del("/api/comments/not-an-id")
           .expect(400)
           .then(({ body }) => {
-            console.log(body);
             expect(body.msg).to.equal("Bad Request");
           });
       });

@@ -1,4 +1,4 @@
-const { connection } = require("../db/connection");
+const connection = require("../db/connection");
 
 const doesTopicOrAuthorExist = (author, topic) => {
   if (author) {
@@ -61,7 +61,7 @@ const selectArticleById = article_id => {
     .count("comment_id as comment_count");
 };
 
-const updateArticle = (article_id, inc_votes) => {
+const updateArticle = (article_id, inc_votes = 0) => {
   return connection
     .select("*")
     .from("articles")

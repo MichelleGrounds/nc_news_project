@@ -6,8 +6,8 @@ chai.use(chaiSorted);
 const { expect } = chai;
 
 const request = require("supertest");
-const { connection } = require("../db/connection");
-const { app } = require("../app");
+const connection = require("../db/connection");
+const app = require("../app");
 
 describe("/api", () => {
   beforeEach(() => {
@@ -138,15 +138,14 @@ describe("/api", () => {
         });
     });
     describe("/:article_id", () => {
-      it("GET:200, returns an array with an article object", () => {
+      it("GET:200, returns an article object", () => {
         return request(app)
           .get("/api/articles/2")
           .expect(200)
           .then(({ body }) => {
-            console.log(body);
-            expect(body.article[0].article_id).to.equal(2);
-            expect(body.article.length).to.equal(1);
-            expect(body.article[0]).to.contain.keys(
+            expect(body.article).to.be.an("object");
+            expect(body.article.article_id).to.equal(2);
+            expect(body.article).to.contain.keys(
               "article_id",
               "title",
               "body",
@@ -189,7 +188,9 @@ describe("/api", () => {
           .send({ inc_votes: 10 })
           .expect(200)
           .then(({ body }) => {
-            expect(body.article[0].votes).to.equal(10);
+            console.log(body);
+            expect(body.article).to.be.an("object");
+            expect(body.article.votes).to.equal(10);
           });
       });
       it("PATCH:404, responds with a 404 error when given a non-existent article_id", () => {
@@ -210,13 +211,22 @@ describe("/api", () => {
             expect(body.msg).to.equal("Bad Request");
           });
       });
-      it("PATCH: 400, no inc_vote on body returns 400", () => {
+      it("PATCH: 400, non-existent it returns 400", () => {
         return request(app)
           .patch("/api/articles/not-an-id")
           .send({})
           .expect(400)
           .then(({ body }) => {
             expect(body.msg).to.equal("Bad Request");
+          });
+      });
+      it("PATCH: 200, no body returns the initial article unchanged", () => {
+        return request(app)
+          .patch("/api/articles/2")
+          .send({})
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.article.votes).to.equal(0);
           });
       });
       it("PATCH: 400, invalid inc_vote on body returns 400", () => {
@@ -271,8 +281,10 @@ describe("/api", () => {
             })
             .expect(201)
             .then(({ body }) => {
-              expect(body.comment[0].article_id).to.equal(4);
-              expect(body.comment[0]).to.contain.keys(
+              console.log(body);
+              expect(body.comment.article_id).to.equal(4);
+              expect(body.comment.votes).to.equal(0);
+              expect(body.comment).to.contain.keys(
                 "comment_id",
                 "author",
                 "article_id",
@@ -359,6 +371,7 @@ describe("/api", () => {
             .get("/api/articles/4/comments")
             .expect(200)
             .then(({ body }) => {
+              console.log(body);
               expect(body.article).to.eql([]);
             });
         });

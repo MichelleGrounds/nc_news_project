@@ -1,4 +1,4 @@
-const { connection } = require("../db/connection");
+const connection = require("../db/connection");
 
 const updateCommentById = (comment_id, inc_votes) => {
   return connection
