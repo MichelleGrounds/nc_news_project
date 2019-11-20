@@ -4,11 +4,11 @@ const { usersRouter } = require("../routes/usersRouter");
 const { articlesRouter } = require("../routes/articlesRouter");
 const { commentsRouter } = require("../routes/commentsRouter");
 const { handleDisallowedMethod } = require("../errors");
-//const { getAvailableEndpoints } = require("../controllers/api-c");
+const { getAvailableEndpoints } = require("../controllers/api-c");
 
 apiRouter
   .route("/")
-  //.get(getAvailableEndpoints)
+  .get(getAvailableEndpoints)
   .all(handleDisallowedMethod);
 
 apiRouter.use("/topics", topicsRouter);
