@@ -23,5 +23,23 @@
         }
       ]
     }
+  },
+  "GET /api/articles/:article_id": {
+    "description": "serves an  object of the article",
+    "queries": "none",
+    "exampleResponse": {
+      "articles": [
+        {
+          "author": "Seafood substitutions are increasing",
+          "title": "cooking",
+          "article_id": "weegembump",
+          "body": "Text from the article..",
+          "topic": 1527695953341,
+          "created_at": "js date time object",
+          "votes": 10,
+          "comment_count": "5"
+        }
+      ]
+    }
   }
 }

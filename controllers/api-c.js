@@ -1,6 +1,8 @@
-//const apiEndpoints = require("../controllers/")
+const { selectAllEndpoints } = require("../models/api-m");
 
 exports.getAvailableEndpoints = (req, res, next) => {
-
-    res.status(200).send({endpoints: apiEndpoints})
-}
+  const path = "";
+  selectAllEndpoints((err, endpoints) => {
+    res.status(200).send({ endpoints });
+  });
+};

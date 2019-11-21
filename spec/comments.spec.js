@@ -10,12 +10,8 @@ const connection = require("../db/connection");
 const app = require("../app");
 
 describe("/api", () => {
-  beforeEach(() => {
-    return connection.seed.run();
-  });
-  after(() => {
-    return connection.destroy();
-  });
+  beforeEach(() => connection.seed.run());
+  after(() => connection.destroy());
   describe("/comments", () => {
     describe("/:comment_id", () => {
       it("PATCH:200, responds with an object that has an updated vote counter", () => {
@@ -25,6 +21,17 @@ describe("/api", () => {
           .expect(200)
           .then(({ body }) => {
             expect(body.comment.votes).to.equal(24);
+            expect(body.comment).to.be.an("object");
+          });
+      });
+      it("PATCH:200, responds with the unchanged object when given no inc_votes is provided in the request body", () => {
+        return request(app)
+          .patch("/api/comments/1")
+          .send({})
+          .expect(200)
+          .then(({ body }) => {
+            console.log(body);
+            expect(body.comment.votes).to.equal(16);
             expect(body.comment).to.be.an("object");
           });
       });

@@ -6,13 +6,9 @@ const request = require("supertest");
 const connection = require("../db/connection");
 const app = require("../app");
 
-describe.only("/api", () => {
-  beforeEach(() => {
-    return connection.seed.run();
-  });
-  after(() => {
-    return connection.destroy();
-  });
+describe("/api", () => {
+  beforeEach(() => connection.seed.run());
+  after(() => connection.destroy());
   describe("/users", () => {
     describe("/:username", () => {
       it("GET:200, responds with a user object", () => {

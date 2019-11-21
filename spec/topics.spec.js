@@ -7,12 +7,8 @@ const connection = require("../db/connection");
 const app = require("../app");
 
 describe("/api", () => {
-  beforeEach(() => {
-    return connection.seed.run();
-  });
-  after(() => {
-    return connection.destroy();
-  });
+  beforeEach(() => connection.seed.run());
+  after(() => connection.destroy());
   describe("/topics", () => {
     it("GET:200 responds with topics", () => {
       return request(app)

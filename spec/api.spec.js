@@ -6,19 +6,25 @@ const request = require("supertest");
 const connection = require("../db/connection");
 const app = require("../app");
 
-describe("/api", () => {
-  beforeEach(() => {
-    return connection.seed.run();
-  });
-  after(() => {
-    return connection.destroy();
-  });
-  it("GET:405 responds with a 405 error when not allowed method is used on api", () => {
-    return request(app)
-      .del("/api")
-      .expect(405)
-      .then(({ body }) => {
-        expect(body.msg).to.equal("Method not allowed");
-      });
+describe("connection set up", () => {
+  beforeEach(() => connection.seed.run());
+  after(() => connection.destroy());
+  describe("/api", () => {
+    it("GET:405 responds with a 405 error when not allowed method is used on api", () => {
+      return request(app)
+        .del("/api")
+        .expect(405)
+        .then(({ body }) => {
+          expect(body.msg).to.equal("Method not allowed");
+        });
+    });
+    it("GET:200, responds with a JSON object containing all available api endpoints", () => {
+      return request(app)
+        .get("/api")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.endpoints).to.be.an("object");
+        });
+    });
   });
 });

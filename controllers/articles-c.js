@@ -77,7 +77,7 @@ exports.getCommentsByArticleId = (req, res, next) => {
           .then(articleResponse => {
             articleResponse.length < 1
               ? next({ status: 404 })
-              : res.status(200).json({ article: [] });
+              : res.status(200).json({ comments: [] });
           })
           .catch(next);
       } else {
