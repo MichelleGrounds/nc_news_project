@@ -18,7 +18,7 @@ describe("connection set up", () => {
           expect(body.msg).to.equal("Method not allowed");
         });
     });
-    it.only("GET:200, responds with a JSON object containing all available api endpoints", () => {
+    it("GET:200, responds with a JSON object containing all available api endpoints", () => {
       return request(app)
         .get("/api")
         .expect(200)
