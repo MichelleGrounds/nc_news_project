@@ -10,7 +10,7 @@
     }
   },
   "GET /api/articles": {
-    "description": "serves an array of all topics",
+    "description": "serves an array of all articles",
     "queries": ["author", "topic", "sort_by", "order"],
     "exampleResponse": {
       "articles": [
@@ -26,20 +26,93 @@
   },
   "GET /api/articles/:article_id": {
     "description": "serves an  object of the article",
-    "queries": "none",
+    "queries": [],
     "exampleResponse": {
-      "articles": [
+      "article": {
+        "author": "lurker",
+        "title": "cooking",
+        "article_id": 3,
+        "body": "Text from the article..",
+        "topic": "coding",
+        "created_at": 1527695953341,
+        "votes": 10,
+        "comment_count": "5"
+      }
+    }
+  },
+  "PATCH /api/articles/:article_id": {
+    "description": "serves an  object of the article",
+    "queries": [],
+    "request_body": "{inc_votes: 10}",
+    "exampleResponse": {
+      "article": {
+        "author": "lurker",
+        "title": "cooking",
+        "article_id": 3,
+        "body": "Text from the article..",
+        "topic": "coding",
+        "created_at": 1527695953341,
+        "votes": 20,
+        "comment_count": "5"
+      }
+    }
+  },
+  "GET /api/articles/:article_id/comments": {
+    "description": "serves an array of comment objects of the article",
+    "queries": ["sort_by", "order"],
+    "exampleResponse": {
+      "comments": [
         {
-          "author": "Seafood substitutions are increasing",
-          "title": "cooking",
-          "article_id": "weegembump",
-          "body": "Text from the article..",
-          "topic": 1527695953341,
-          "created_at": "js date time object",
+          "comment_id": 2,
           "votes": 10,
-          "comment_count": "5"
+          "created_at": 1527695953341,
+          "author": "lurker",
+          "body": "this is a good thing"
         }
       ]
+    }
+  },
+  "POST /api/articles/:article_id/comments": {
+    "description": "serves an object of the posted comment",
+    "queries": [],
+    "requestBody": "{username: lurker, body: Good stuff}",
+    "exampleResponse": {
+      "comment": {
+        "comment_id": 25,
+        "votes": 0,
+        "created_at": 1527695953341,
+        "author": "lurker",
+        "body": "Good stuff"
+      }
+    }
+  },
+  "GET /api/comments/:comment_id": {
+    "description": "serves an object of the comment",
+    "queries": [],
+    "requestBody": "{inc_votes: 10}",
+    "exampleResponse": {
+      "comment": {
+        "comment_id": 25,
+        "votes": 10,
+        "created_at": 1527695953341,
+        "author": "lurker",
+        "body": "Good stuff"
+      }
+    }
+  },
+  "DELETE /api/comments/:comment_id": {
+    "description": "deletes the comment",
+    "exampleResponse": "204 - no content"
+  },
+  "GET /api/users/:userid": {
+    "description": "serves an object of the user",
+    "parametricInputExample": "lurker",
+    "exampleResponse": {
+      "user": {
+        "username": "lurker",
+        "avatar_url": "http://www.GreateImage.com",
+        "name": "marie"
+      }
     }
   }
 }
