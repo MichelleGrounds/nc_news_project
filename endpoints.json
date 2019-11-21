@@ -110,7 +110,7 @@
     "exampleResponse": {
       "user": {
         "username": "lurker",
-        "avatar_url": "http://www.GreateImage.com",
+        "avatar_url": "http://www.GreatImage.com",
         "name": "marie"
       }
     }
