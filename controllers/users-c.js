@@ -5,9 +5,7 @@ exports.getUser = (req, res, next) => {
   selectUser(username)
     .then(userResponse => {
       const user = userResponse[0];
-      userResponse.length < 1
-        ? next({ status: 404 })
-        : res.status(200).json({ user });
+      res.status(200).json({ user });
     })
     .catch(next);
 };

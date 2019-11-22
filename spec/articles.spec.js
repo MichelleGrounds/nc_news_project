@@ -334,7 +334,6 @@ describe("connection", () => {
               .get("/api/articles/1/comments")
               .expect(200)
               .then(({ body }) => {
-                console.log(body);
                 expect(body.comments.length).to.equal(13);
                 expect(body.comments[0].votes).to.equal(14);
                 expect(body.comments[3].votes).to.equal(0);

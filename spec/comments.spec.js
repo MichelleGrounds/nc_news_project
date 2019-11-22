@@ -30,7 +30,6 @@ describe("/api", () => {
           .send({})
           .expect(200)
           .then(({ body }) => {
-            console.log(body);
             expect(body.comment.votes).to.equal(16);
             expect(body.comment).to.be.an("object");
           });
