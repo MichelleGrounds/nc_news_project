@@ -397,6 +397,24 @@ describe("connection", () => {
                 expect(body.comments).to.eql([]);
               });
           });
+          it.only("GET:200, articles has a limit and p query, limit: how many items per page (Default 10), p: which page defaults to 1", () => {
+            return request(app)
+              .get("/api/articles/1/comments")
+              .expect(200)
+              .then(({ body }) => {
+                expect(body.comments.length).to.equal(10);
+                expect(body.total_count).to.equal(13);
+              });
+          });
+          it.only("GET:200, the limit and page of article can be changed and returns that many items depending on page", () => {
+            return request(app)
+              .get("/api/articles/5/comments/?limit=5&p=1")
+              .expect(200)
+              .then(({ body }) => {
+                expect(body.comments.length).to.equal(2);
+                expect(body.total_count).to.equal(2);
+              });
+          });
           it("GET:404, given a non-existent article id returns a 404 not found", () => {
             return request(app)
               .get("/api/articles/55555/comments")

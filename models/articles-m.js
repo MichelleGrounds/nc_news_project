@@ -93,7 +93,9 @@ const addCommentToArticle = (article_id, username, body) => {
 const selectCommentsByArticleId = (
   article_id,
   sort_by = "created_at",
-  order = "desc"
+  order = "desc",
+  limit = 10,
+  p = 1
 ) => {
   const comments = connection
     .select("*")
@@ -106,7 +108,9 @@ const selectCommentsByArticleId = (
       if (comments[0].length === 0 && comments[1].length === 0) {
         return Promise.reject({ status: 404 });
       } else {
-        return comments[0];
+        beginSlice = limit * p - limit;
+        endSlice = p * limit;
+        return comments[0].slice(beginSlice, endSlice);
       }
     }
   );
@@ -135,7 +139,7 @@ const doesArticleExist = article_id => {
 };
 
 //set up a new function, it limits author and topic, and counts the total articles, doesn't need a group by
-const totalCountOfArticles = (author, topic) => {
+const totalCountArticles = (author, topic) => {
   return connection
     .select("*")
     .from("articles")
@@ -147,6 +151,15 @@ const totalCountOfArticles = (author, topic) => {
     .count("article_id");
 };
 
+const countComments = article_id => {
+  return connection
+    .select("*")
+    .from("comments")
+    .where("comments.article_id", article_id)
+    .groupBy("comment_id")
+    .count("comment_id");
+};
+
 module.exports = {
   selectArticleById,
   updateArticle,
@@ -155,5 +168,6 @@ module.exports = {
   selectAllArticles,
   doesTopicOrAuthorExist,
   doesArticleExist,
-  totalCountOfArticles
+  totalCountArticles,
+  countComments
 };

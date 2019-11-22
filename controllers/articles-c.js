@@ -4,7 +4,8 @@ const {
   addCommentToArticle,
   selectCommentsByArticleId,
   selectAllArticles,
-  totalCountOfArticles
+  totalCountArticles,
+  countComments
 } = require("../models/articles-m");
 
 exports.getAllArticles = (req, res, next) => {
@@ -18,7 +19,7 @@ exports.getAllArticles = (req, res, next) => {
     p
   );
 
-  const totalCounter = totalCountOfArticles(author, topic);
+  const totalCounter = totalCountArticles(author, topic);
   return Promise.all([selectArticles, totalCounter])
     .then(([articlesR, totalCounterResponse]) => {
       const articles = {};
@@ -64,11 +65,29 @@ exports.postCommentByArticleId = (req, res, next) => {
 
 exports.getCommentsByArticleId = (req, res, next) => {
   const { article_id } = req.params;
-  const { sort_by, order } = req.query;
+  const { sort_by, order, limit, p } = req.query;
 
-  selectCommentsByArticleId(article_id, sort_by, order)
-    .then(comments => {
-      res.status(200).json({ comments });
+  // selectCommentsByArticleId(article_id, sort_by, order)
+  //   .then(comments => {
+  //     res.status(200).json({ comments });
+  //   })
+
+  const selectComments = selectCommentsByArticleId(
+    article_id,
+    sort_by,
+    order,
+    limit,
+    p
+  );
+
+  const totalCounter = countComments(article_id);
+  return Promise.all([selectComments, totalCounter])
+    .then(([commentsResponse, totalCounterResponse]) => {
+      const comments = {};
+      comments.comments = commentsResponse;
+      comments.total_count = totalCounterResponse.length;
+
+      res.status(200).send(comments);
     })
     .catch(next);
 };
