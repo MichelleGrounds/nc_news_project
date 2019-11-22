@@ -1,5 +1,4 @@
 const { DB_URL } = process.env;
-//maybe have to replace db_url
 
 const ENV = process.env.NODE_ENV || "development";
 

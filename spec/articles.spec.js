@@ -111,6 +111,32 @@ describe("connection", () => {
             expect(body.articles[0].topic).to.equal("mitch");
           });
       });
+      it("GET:200, articles has a limit and p query, limit: how many items per page (Default 10), p: which page defaults to 1", () => {
+        return request(app)
+          .get("/api/articles/")
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.articles.length).to.equal(10);
+            expect(body.total_count).to.equal(12);
+          });
+      });
+      it("GET:200, the limit and page of article can be changed and returns that many items depending on page", () => {
+        return request(app)
+          .get("/api/articles/?limit=5&p=3")
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.articles.length).to.equal(2);
+            expect(body.total_count).to.equal(12);
+          });
+      });
+      it("GET:200, shows the total count of articles including the limitation of author and topic", () => {
+        return request(app)
+          .get("/api/articles/?limit=5&p=3&author=rogersop")
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.total_count).to.equal(3);
+          });
+      });
       it("GET:400, responds with Bad Request when given an invalid query name", () => {
         return request(app)
           .get("/api/articles/?sort_by=not-a-column")
@@ -245,7 +271,7 @@ describe("connection", () => {
               expect(body.article.votes).to.equal(10);
             });
         });
-        describe("/comments", () => {
+        describe.only("/comments", () => {
           it("POST:400, no body is included in the requesting body", () => {
             return request(app)
               .post("/api/articles/4/comments")
@@ -368,7 +394,6 @@ describe("connection", () => {
               .get("/api/articles/2/comments")
               .expect(200)
               .then(({ body }) => {
-                console.log(body);
                 expect(body.comments).to.eql([]);
               });
           });

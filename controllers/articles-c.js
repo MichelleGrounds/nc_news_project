@@ -3,14 +3,29 @@ const {
   updateArticle,
   addCommentToArticle,
   selectCommentsByArticleId,
-  selectAllArticles
+  selectAllArticles,
+  totalCountOfArticles
 } = require("../models/articles-m");
 
 exports.getAllArticles = (req, res, next) => {
-  const { sort_by, order, author, topic } = req.query;
-  selectAllArticles(sort_by, order, author, topic)
-    .then(articles => {
-      res.status(200).json({ articles });
+  const { sort_by, order, author, topic, limit, p } = req.query;
+  const selectArticles = selectAllArticles(
+    sort_by,
+    order,
+    author,
+    topic,
+    limit,
+    p
+  );
+
+  const totalCounter = totalCountOfArticles(author, topic);
+  return Promise.all([selectArticles, totalCounter])
+    .then(([articlesR, totalCounterResponse]) => {
+      const articles = {};
+      articles.articles = articlesR;
+      articles.total_count = totalCounterResponse.length;
+
+      res.status(200).send(articles);
     })
     .catch(next);
 };

@@ -1,32 +1,12 @@
 const connection = require("../db/connection");
 
-const doesTopicOrAuthorExist = (author, topic) => {
-  if (author) {
-    return connection
-      .select("username")
-      .from("users")
-      .where("username", author);
-  }
-  if (topic) {
-    return connection
-      .select("slug")
-      .from("topics")
-      .where("slug", topic);
-  }
-};
-
-const doesArticleExist = article_id => {
-  return connection
-    .select("article_id")
-    .from("articles")
-    .where("article_id", article_id);
-};
-
 const selectAllArticles = (
   sort_by = "created_at",
   order = "desc",
   author,
-  topic
+  topic,
+  limit = 10,
+  p = 1
 ) => {
   const articles = connection
     .select(
@@ -56,7 +36,9 @@ const selectAllArticles = (
       if (articles[0].length === 0 && articles[1].length === 0) {
         return Promise.reject({ status: 404 });
       } else {
-        return articles[0];
+        beginSlice = limit * p - limit;
+        endSlice = p * limit;
+        return articles[0].slice(beginSlice, endSlice);
       }
     }
   );
@@ -130,6 +112,41 @@ const selectCommentsByArticleId = (
   );
 };
 
+const doesTopicOrAuthorExist = (author, topic) => {
+  if (author) {
+    return connection
+      .select("username")
+      .from("users")
+      .where("username", author);
+  }
+  if (topic) {
+    return connection
+      .select("slug")
+      .from("topics")
+      .where("slug", topic);
+  }
+};
+
+const doesArticleExist = article_id => {
+  return connection
+    .select("article_id")
+    .from("articles")
+    .where("article_id", article_id);
+};
+
+//set up a new function, it limits author and topic, and counts the total articles, doesn't need a group by
+const totalCountOfArticles = (author, topic) => {
+  return connection
+    .select("*")
+    .from("articles")
+    .modify(function(query) {
+      if (author) query.where("articles.author", author);
+      if (topic) query.where("articles.topic", topic);
+    })
+    .groupBy("article_id")
+    .count("article_id");
+};
+
 module.exports = {
   selectArticleById,
   updateArticle,
@@ -137,5 +154,6 @@ module.exports = {
   selectCommentsByArticleId,
   selectAllArticles,
   doesTopicOrAuthorExist,
-  doesArticleExist
+  doesArticleExist,
+  totalCountOfArticles
 };

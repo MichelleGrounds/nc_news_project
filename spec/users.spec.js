@@ -9,7 +9,7 @@ const app = require("../app");
 describe("/api", () => {
   beforeEach(() => connection.seed.run());
   after(() => connection.destroy());
-  describe.only("/users", () => {
+  describe("/users", () => {
     describe("/:username", () => {
       it("GET:200, responds with a user object", () => {
         return request(app)
