@@ -37,10 +37,41 @@ npm i -D chai chai-sorted mocha supertest
 
 A guide to get the development environment set up
 
-Instruction
+In the root create a file called knexfile.js. In this file add the following code:
 
 ```
-code
+const { DB_URL } = process.env;
+
+const ENV = process.env.NODE_ENV || "development";
+
+const baseConfig = {
+  client: "pg",
+  migrations: {
+    directory: "./db/migrations"
+  },
+  seeds: {
+    directory: "./db/seeds"
+  }
+};
+
+const customConfig = {
+  production: {
+    connection: `${DB_URL}?ssl=true`
+  },
+  development: {
+    connection: {
+      database: "nc_news"
+    }
+  },
+  test: {
+    connection: {
+      database: "nc_news_test"
+    }
+  }
+};
+
+module.exports = { ...customConfig[ENV], ...baseConfig };
+
 ```
 
 Then
@@ -49,42 +80,20 @@ Then
 code
 ```
 
-# Utility Functions
+### Setting up the database and running tests
 
-You should employ full TDD as you build these functions.
+In order to seed the database run the following command:
 
-If you need extra guidance refer back to your schema in the migrations files and look at how the data provided differs from the structure set out in the schema.
+```
+npm run setup-dbs
+```
 
----
+To run tests run the following:
 
-## formatDate
+```
+npm test
+```
 
-This utility function should be able to take an array (`list`) of objects and return a new array. Each item in the new array must have its timestamp converted into a Javascript date object. Everything else in each item must be maintained.
+### Minimum versions
 
-_hint: Think carefully about how you can test that this has worked - it's not by copying and pasting a sql timestamp from the terminal into your test_
-
----
-
-## makeRefObj
-
-This utility function should be able to take an array (`list`) of objects and return a reference object. The reference object must be keyed by each item's title, with the values being each item's corresponding id. e.g.
-
-`[{ article_id: 1, title: 'A' }]`
-
-will become
-
-`{ A: 1 }`
-
----
-
-## formatComments
-
-This utility function should be able to take an array of comment objects (`comments`) and a reference object, and return a new array of formatted comments.
-
-Each formatted comment must have:
-
-- Its `created_by` property renamed to an `author` key
-- Its `belongs_to` property renamed to an `article_id` key
-- The value of the new `article_id` key must be the id corresponding to the original title value provided
-- Its `created_at` value converted into a javascript date object
-- The rest of the comment's properties must be maintained
+To successfully run this code the minimum version of Node.js should be 12.9.1 and for Postgres 7.12.1

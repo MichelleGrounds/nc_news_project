@@ -67,11 +67,6 @@ exports.getCommentsByArticleId = (req, res, next) => {
   const { article_id } = req.params;
   const { sort_by, order, limit, p } = req.query;
 
-  // selectCommentsByArticleId(article_id, sort_by, order)
-  //   .then(comments => {
-  //     res.status(200).json({ comments });
-  //   })
-
   const selectComments = selectCommentsByArticleId(
     article_id,
     sort_by,

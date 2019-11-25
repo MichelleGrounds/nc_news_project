@@ -6,7 +6,7 @@ const request = require("supertest");
 const connection = require("../db/connection");
 const app = require("../app");
 
-describe("connection set up", () => {
+describe.only("connection set up", () => {
   beforeEach(() => connection.seed.run());
   after(() => connection.destroy());
   describe("/api", () => {

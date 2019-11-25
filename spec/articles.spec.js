@@ -271,7 +271,7 @@ describe("connection", () => {
               expect(body.article.votes).to.equal(10);
             });
         });
-        describe.only("/comments", () => {
+        describe("/comments", () => {
           it("POST:400, no body is included in the requesting body", () => {
             return request(app)
               .post("/api/articles/4/comments")
@@ -397,7 +397,7 @@ describe("connection", () => {
                 expect(body.comments).to.eql([]);
               });
           });
-          it.only("GET:200, articles has a limit and p query, limit: how many items per page (Default 10), p: which page defaults to 1", () => {
+          it("GET:200, articles has a limit and p query, limit: how many items per page (Default 10), p: which page defaults to 1", () => {
             return request(app)
               .get("/api/articles/1/comments")
               .expect(200)
@@ -406,7 +406,7 @@ describe("connection", () => {
                 expect(body.total_count).to.equal(13);
               });
           });
-          it.only("GET:200, the limit and page of article can be changed and returns that many items depending on page", () => {
+          it("GET:200, the limit and page of article can be changed and returns that many items depending on page", () => {
             return request(app)
               .get("/api/articles/5/comments/?limit=5&p=1")
               .expect(200)

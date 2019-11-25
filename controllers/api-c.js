@@ -1,7 +1,6 @@
-const { selectAllEndpoints } = require("../models/api-m");
+const endPointsJSON = require("../endpoints.json");
 
 exports.getAvailableEndpoints = (req, res, next) => {
-  selectAllEndpoints((err, endpoints) => {
-    res.status(200).send({ endpoints });
-  }).catch(next);
+  const endpoints = endPointsJSON;
+  res.status(200).json({ endpoints });
 };
