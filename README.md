@@ -8,12 +8,32 @@ This project is currently the backend for a news api, allowing access to article
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
 
-The first things to do is cloning the project. For this click the clone or download button and copy the path, it will start with 'https://github.com'
-In your terminal select the path in which you would like to clone the project into. You can change the directory by typing cd DIRECTORY, for example cd Documents (capitalisation and the order of folders is important!). To get a list of folders and documents type ls.
+The first things to do is cloning the project. For this click the clone or download button and copy the path.
+
+In your terminal select the path in which you would like to clone the project into. Here is an example of changing directory
+
+```
+cd Documents/northcoders
+```
+
+To get a list of folder contents you can use ls
+
+```
+ls
+
+```
 
 Once in the desired directory, paste in the path you copied from github.
 
-When the project has cloned you can open it in, for example, Visual Studio Code.
+```
+git clone https://github.com/PATH
+```
+
+When the project has cloned you can open it in, for example, Visual Studio Code. You can for example use the command
+
+```
+code .
+```
 
 ### Prerequisites
 
@@ -38,6 +58,8 @@ npm i -D chai chai-sorted mocha supertest
 A guide to get the development environment set up
 
 In the root create a file called knexfile.js. In this file add the following code:
+The reason for this is X
+it does THIS
 
 ```
 const { DB_URL } = process.env;
@@ -72,28 +94,25 @@ const customConfig = {
 
 module.exports = { ...customConfig[ENV], ...baseConfig };
 
-```
-
-Then
-
-```
-code
-```
-
 ### Setting up the database and running tests
 
 In order to seed the database run the following command:
 
 ```
+
 npm run setup-dbs
+
 ```
 
 To run tests run the following:
 
 ```
+
 npm test
+
 ```
 
 ### Minimum versions
 
 To successfully run this code the minimum version of Node.js should be 12.9.1 and for Postgres 7.12.1
+```
