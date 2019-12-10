@@ -61,11 +61,13 @@ const selectArticleById = article_id => {
 
 const updateArticle = (article_id, inc_votes = 0) => {
   return connection
-    .select("*")
+    .select("articles.*")
     .from("articles")
-    .where("article_id", article_id)
+    .where("articles.article_id", article_id)
     .increment("votes", inc_votes)
-    .returning("*")
+    .then(() => {
+      return selectArticleById(article_id);
+    })
     .then(article => {
       if (article.length < 1) {
         return Promise.reject({ status: 404 });

@@ -207,7 +207,7 @@ describe("connection", () => {
             });
         });
 
-        it("PATCH:200, responds with the updated article object", () => {
+        it.only("PATCH:200, responds with the updated article object", () => {
           return request(app)
             .patch("/api/articles/4")
             .send({ inc_votes: 10 })
@@ -215,6 +215,16 @@ describe("connection", () => {
             .then(({ body }) => {
               expect(body.article).to.be.an("object");
               expect(body.article.votes).to.equal(10);
+              expect(body.article).to.contain.keys(
+                "article_id",
+                "title",
+                "body",
+                "votes",
+                "author",
+                "topic",
+                "created_at",
+                "comment_count"
+              );
             });
         });
         it("PATCH:404, responds with a 404 error when given a non-existent article_id", () => {
