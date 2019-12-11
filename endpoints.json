@@ -86,6 +86,21 @@
       }
     }
   },
+  "PATCH /api/comments/:comment_id": {
+    "description": "serves an  object of the patched comment",
+    "queries": [],
+    "request_body": "{inc_votes: 10}",
+    "exampleResponse": {
+      "article": {
+        "author": "lurker",
+        "comment_id": 3,
+        "article_id": 2,
+        "body": "this is a comment",
+        "created_at": 1527695953341,
+        "votes": 20
+      }
+    }
+  },
   "GET /api/comments/:comment_id": {
     "description": "serves an object of the comment",
     "queries": [],

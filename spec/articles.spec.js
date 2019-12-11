@@ -207,7 +207,7 @@ describe("connection", () => {
             });
         });
 
-        it.only("PATCH:200, responds with the updated article object", () => {
+        it("PATCH:200, responds with the updated article object", () => {
           return request(app)
             .patch("/api/articles/4")
             .send({ inc_votes: 10 })
@@ -304,7 +304,7 @@ describe("connection", () => {
                 expect(body.msg).to.equal("Bad Request");
               });
           });
-          it("POST:201, responds with the posted comment", () => {
+          it.only("POST:201, responds with the posted comment", () => {
             return request(app)
               .post("/api/articles/4/comments")
               .send({
@@ -313,6 +313,7 @@ describe("connection", () => {
               })
               .expect(201)
               .then(({ body }) => {
+                console.log(body.comment);
                 expect(body.comment.article_id).to.equal(4);
                 expect(body.comment.votes).to.equal(0);
                 expect(body.comment).to.contain.keys(
@@ -323,6 +324,7 @@ describe("connection", () => {
                   "created_at",
                   "body"
                 );
+                expect(body.comment.created_at).not.to.be.null;
               });
           });
           it("POST:404, when given a non-existing article_id responds with 404 error", () => {

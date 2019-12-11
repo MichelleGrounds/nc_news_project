@@ -22,6 +22,14 @@ describe("/api", () => {
           .then(({ body }) => {
             expect(body.comment.votes).to.equal(24);
             expect(body.comment).to.be.an("object");
+            expect(body.comment).to.contain.keys(
+              "comment_id",
+              "votes",
+              "created_at",
+              "author",
+              "body"
+            );
+            expect(body.comment.created_at).not.to.be.null;
           });
       });
       it("PATCH:200, responds with the unchanged object when given no inc_votes is provided in the request body", () => {
