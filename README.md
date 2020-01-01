@@ -1,4 +1,4 @@
-#Michelle's News Project
+# Michelle's News Project
 
 https://nc-news-api-michelle.herokuapp.com/
 
